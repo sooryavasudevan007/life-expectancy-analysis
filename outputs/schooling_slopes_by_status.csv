@@ -1,0 +1,7 @@
+model,group,slope,ci_low,ci_high
+main,developing,2.241,1.757,2.725
+main,developed,0.611,-0.346,1.568
+full_data,developing,2.432,1.908,2.957
+full_data,developed,1.592,0.572,2.611
+trim_resid5,developing,1.76,1.378,2.143
+trim_resid5,developed,0.259,-0.473,0.991

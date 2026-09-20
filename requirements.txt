@@ -1,6 +1,1 @@
-pandas
-numpy
-matplotlib
-seaborn
-statsmodels
-scikit-learn
+matplotlib==3.10.6

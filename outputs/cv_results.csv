@@ -1,3 +1,3 @@
 model,R2,RMSE
-Lasso,0.81,4.022
-Random forest,0.808,4.031
+Lasso,0.815,3.935
+Random forest,0.82,3.89
