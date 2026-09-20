@@ -30,7 +30,7 @@ from sklearn.preprocessing import StandardScaler
 DATA = Path("data/Life Expectancy Data.csv")
 OUT = Path("outputs")
 (OUT / "figures").mkdir(parents=True, exist_ok=True)
-sns.set_theme(style="whitegrid")
+sns.set_theme(style="whitegrid", font_scale=0.85)
 
 # ----------------------------------------------------------------------------
 # 1. Load and clean
@@ -73,11 +73,12 @@ print("Clean shape:", df.shape, "| countries:", df["country"].nunique())
 # ----------------------------------------------------------------------------
 # 2. Exploratory analysis
 # ----------------------------------------------------------------------------
-fig, ax = plt.subplots(1, 2, figsize=(11, 4))
+fig, ax = plt.subplots(1, 2, figsize=(8, 3))
 sns.histplot(df["life_expectancy"], kde=True, ax=ax[0])
 ax[0].set(title="Distribution of life expectancy", xlabel="Life expectancy (years)")
 sns.lineplot(data=df, x="year", y="life_expectancy", hue="status", errorbar="sd", ax=ax[1])
 ax[1].set(title="Trend by development status (mean ± SD)", xlabel="Year", ylabel="Life expectancy (years)")
+ax[1].set_xticks([2000, 2005, 2010, 2015])
 sns.move_legend(ax[1], "lower right", title="Status")
 plt.tight_layout(); plt.savefig(OUT / "figures/fig1_distribution_trend.png", dpi=200); plt.close()
 
@@ -89,7 +90,7 @@ sns.heatmap(df[["life_expectancy"] + feats].corr(), annot=True, fmt=".2f", cmap=
 plt.title("Correlation matrix")
 plt.tight_layout(); plt.savefig(OUT / "figures/fig2_correlations.png", dpi=200); plt.close()
 
-g = sns.lmplot(data=df, x="schooling", y="life_expectancy", hue="status", height=4.5, aspect=1.4,
+g = sns.lmplot(data=df, x="schooling", y="life_expectancy", hue="status", height=3.4, aspect=1.35,
                scatter_kws={"alpha": 0.3, "s": 14}, facet_kws={"legend_out": False})
 g.set_axis_labels("Schooling (years)", "Life expectancy (years)")
 g.ax.set_title("Schooling vs life expectancy (descriptive OLS lines by status)")
@@ -132,19 +133,19 @@ coef["ci_high"] = coef["coef"] + 1.96 * coef["se"]
 coef.round(3).to_csv(OUT / "mixed_model_coefficients.csv")
 
 c = coef.drop("Intercept").sort_values("coef")
-plt.figure(figsize=(7, 5))
+plt.figure(figsize=(4.8, 3.5))
 plt.errorbar(c["coef"], range(len(c)), xerr=1.96 * c["se"], fmt="o", capsize=3)
 nice = {"year": "Year", "log_hiv": "HIV/AIDS (log)", "schooling": "Schooling", "log_gdp": "GDP (log)",
         "polio": "Polio coverage", "diphtheria": "Diphtheria coverage", "total_expenditure": "Health expenditure",
         "alcohol": "Alcohol", "developed": "Developed (vs developing)", "schooling:developed": "Schooling × developed"}
 plt.yticks(range(len(c)), [nice.get(k, k) for k in c.index]); plt.axvline(0, color="grey", ls="--")
 plt.xlabel("Effect on life expectancy (years)\nper 1 SD for continuous predictors")
-plt.title("Mixed-effects model: fixed effects (95% CI)")
+plt.title("Fixed effects (95% CI)")
 plt.tight_layout(); plt.savefig(OUT / "figures/fig4_coefficients.png", dpi=200); plt.close()
 
 # Residual diagnostics
 resid, fitted = mixed.resid, mixed.fittedvalues
-fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+fig, ax = plt.subplots(1, 2, figsize=(8, 3.2))
 ax[0].scatter(fitted, resid, alpha=0.3, s=10)
 ax[0].axhline(0, color="grey", ls="--")
 ax[0].set(xlabel="Fitted values", ylabel="Residuals", title="Residuals vs fitted")
